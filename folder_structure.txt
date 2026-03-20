@@ -1,0 +1,42 @@
+algotrade-bot/
+│
+├── data/
+│   ├── raw/
+│   ├── processed/
+│
+├── notebooks/
+│   ├── exploration.ipynb
+│   ├── feature_engineering.ipynb
+│
+├── src/
+│   ├── data/
+│   │   └── loader.py
+│   │
+│   ├── features/
+│   │   └── indicators.py
+│   │
+│   ├── strategies/
+│   │   ├── base.py
+│   │   ├── mean_reversion.py
+│   │   └── momentum.py
+│   │
+│   ├── backtesting/
+│   │   └── engine.py
+│   │
+│   ├── execution/
+│   │   └── simulator.py
+│   │
+│   ├── portfolio/
+│   │   └── portfolio.py
+│   │
+│   ├── streaming/
+│   │   └── client.py
+│   │
+│   └── main.py
+│
+├── tests/
+│
+├── config/
+│   └── config.yaml
+│
+├── README.md
