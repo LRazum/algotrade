@@ -8,9 +8,8 @@ class PortfolioManager:
     def __init__(self, initial_cash: float = 10000.0, risk_per_trade_pct: float = 0.20):
         self.cash = initial_cash
         self.pocetni_cash = initial_cash
-        self.risk_pct = risk_per_trade_pct # Postotak slobodnog casha (npr. 0.20 = 20%)
+        self.risk_pct = risk_per_trade_pct
         
-        # Praćenje inventara: simbol -> količina (broj dionica)
         self.pozicije: Dict[str, float] = {}
         self.prosjecna_cijena_ulaza: Dict[str, float] = {}
         
@@ -26,9 +25,7 @@ class PortfolioManager:
             cijena = tick_data[simbol]['price']
             trenutna_pozicija = self.pozicije.get(simbol, 0.0)
             
-            # BUY SIGNAL
             if signal == 1 and trenutna_pozicija == 0.0:
-                # Dinamički ulog baziran na trenutno dostupnom novcu
                 trenutni_ulog = self.cash * self.risk_pct
                 
                 if trenutni_ulog > 10.0 and self.cash >= trenutni_ulog:
@@ -39,7 +36,7 @@ class PortfolioManager:
                     self.broj_tradeova += 1
                     print(f"[{timestamp.strftime('%H:%M:%S')}] 🟢 KUPI  {simbol:4} | Cijena: {cijena:.2f} | Ulog: ${trenutni_ulog:.2f} ({(self.risk_pct*100):.0f}% casha)")
 
-            # SELL SIGNAL (Zatvaranje long pozicije)
+
             elif signal == -1 and trenutna_pozicija > 0.0:
                 vrijednost_prodaje = trenutna_pozicija * cijena
                 ulog = trenutna_pozicija * self.prosjecna_cijena_ulaza[simbol]
@@ -65,7 +62,6 @@ class PortfolioManager:
                 ulog = kolicina * self.prosjecna_cijena_ulaza[simbol]
                 profit = vrijednost_prodaje - ulog
                 
-                # Ažuriranje balansa
                 self.cash += vrijednost_prodaje
                 self.ukupni_realizirani_pnl += profit
                 self.pozicije[simbol] = 0.0

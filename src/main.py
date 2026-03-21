@@ -1,15 +1,17 @@
 import sys
 from pathlib import Path
+from typing import Dict
 
 root_dir = Path(__file__).resolve().parent.parent
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
 from src.execution.simulator import LiveSimulator
-from src.strategies.base_strategy import ZScoreStrategy
+from src.strategies.base_strategy import EmaCrossStrategy
 from src.portfolio.manager import PortfolioManager
 
-strategija = ZScoreStrategy(window_size=150, z_threshold=2.5) 
+strategija = EmaCrossStrategy(er_period=10)
+
 portfolio = PortfolioManager(initial_cash=10000.0, risk_per_trade_pct=0.20)
 
 trgovanje_aktivno = True
@@ -19,10 +21,9 @@ def master_tick_handler(timestamp, tick_data):
 
     if timestamp.hour == 20 and timestamp.minute >= 55:
         if trgovanje_aktivno:
-            print(f"\n[{timestamp.strftime('%H:%M:%S')}] KRAJ DANA BLIZU - POKREĆEM LIKVIDACIJU SVIH POZICIJA!")
+            print(f"\n[{timestamp.strftime('%H:%M:%S')}] ⚠️ KRAJ DANA BLIZU - POKREĆEM LIKVIDACIJU SVIH POZICIJA!")
             portfolio.liquidate_all(tick_data, timestamp)
             trgovanje_aktivno = False
-        
         return 
 
     if trgovanje_aktivno:
@@ -42,5 +43,4 @@ if __name__ == "__main__":
     )
     
     simulator.pokreni()
-    
     portfolio.ispis_rezultata()
